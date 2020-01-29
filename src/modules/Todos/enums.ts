@@ -1,0 +1,8 @@
+export enum ETodoAction {
+    ADD_TODO = 'ADD_TODO',
+    TOGGLE_DONE = 'TOGGLE_DONE',
+    START_TIMER = 'START_TIMER',
+    PAUSE_TIMER = 'PAUSE_TIMER',
+    STOP_TIMER = 'STOP_TIMER',
+    REMOVE_TODO = 'REMOVE_TODO',
+}
