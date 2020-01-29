@@ -1,5 +1,3 @@
-import { ETodoAction } from './enums';
-
 export interface ITodo {
     id: number;
     createdAt: string;
@@ -13,9 +11,4 @@ export interface ITodo {
 export interface ITodoAccomplishTime {
     startTime: string;
     endTime?: string;
-}
-
-export interface ITodoAction {
-    type: ETodoAction;
-    payload?: any;
 }

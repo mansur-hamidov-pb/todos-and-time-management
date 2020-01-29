@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { ITodo, ITodoAction } from './models';
+import { ITodo } from './models';
 import { ETodoAction } from './enums';
 import { isTodoDone } from './utils';
 
@@ -8,7 +8,7 @@ import { getNewRecordId } from '../../utils';
 
 export const initialState: ITodo[] = [];
 
-export const todosReducer = (state: ITodo[] = initialState, action: ITodoAction): ITodo[] => {
+export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[] => {
     const currentDate = moment();
     const currentTime = currentDate.format('x');
 
@@ -26,17 +26,18 @@ export const todosReducer = (state: ITodo[] = initialState, action: ITodoAction)
             ];
         case ETodoAction.TOGGLE_DONE:
             return state.map(todo => {
-                return todo.id === action.payload.todoId ? todo : {
+                return todo.id === action.payload.id ? todo : {
                     ...todo,
                     doneTime: isTodoDone(todo) ? currentTime : null
                 }
             });
         case ETodoAction.REMOVE_TODO:
-            return state.filter(todo => todo.id !== action.payload.todoId);
+            return state.filter(todo => todo.id !== action.payload.id);
         case ETodoAction.START_TIMER:
             return state.map(todo => {
-                return todo.id === action.payload.todoId ? todo : {
+                return todo.id === action.payload.id ? todo : {
                     ...todo,
+                    isInProgress: true,
                     accomplishTime: todo.accomplishTime ? [
                         ...todo.accomplishTime,
                         {
@@ -47,7 +48,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: ITodoAction)
             });
         case ETodoAction.PAUSE_TIMER:
             return state.map(todo => {
-                return todo.id === action.payload.todoId ? todo : {
+                return todo.id === action.payload.id ? todo : {
                     ...todo,
                     accomplishTime: [
                         ...todo.accomplishTime.slice(-1),
@@ -60,14 +61,14 @@ export const todosReducer = (state: ITodo[] = initialState, action: ITodoAction)
             });
         case ETodoAction.STOP_TIMER:
                 return state.map(todo => {
-                    return todo.id === action.payload.todoId ? todo : {
+                    return todo.id === action.payload.id ? todo : {
                         ...todo,
                         doneTime: currentTime,
                         accomplishTime: [
                             ...todo.accomplishTime.slice(-1),
                             {
                                 startTime: todo.accomplishTime[todo.accomplishTime.length - 1].startTime,
-                                endTime: currentTime
+                                endTime: todo.accomplishTime[todo.accomplishTime.length - 1].endTime || currentTime
                             }
                         ]
                     };

@@ -1,18 +1,23 @@
 import * as React from 'react';
 
-import { ITodo, ITodoAction } from '../models';
+import { ITodo } from '../models';
+
 import { todosReducer, initialState } from '../reducer';
-import { ETodoAction } from '../enums';
 
 interface IContext {
     todos: ITodo[];
-    dispatch: ({type, payload}: {type: ETodoAction, payload?: any}) => void;
+    dispatch: (action: any) => void;
 }
 
 export const TodoContext = React.createContext<IContext>({} as IContext);
 
 export const TodoProvider: React.FC = ({ children }) => {
-    const [todos, dispatchTodoAction] = React.useReducer(todosReducer, initialState);
+    const initialTodos = JSON.parse(localStorage.getItem('todos') || '[]') as ITodo[];
+    const [todos, dispatchTodoAction] = React.useReducer(todosReducer, initialTodos || initialState);
+
+    React.useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos])
 
     return (
         <TodoContext.Provider value={{todos, dispatch: dispatchTodoAction}}>
