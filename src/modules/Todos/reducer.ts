@@ -35,7 +35,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
             return state.filter(todo => todo.id !== action.payload.id);
         case ETodoAction.START_TIMER:
             return state.map(todo => {
-                return todo.id === action.payload.id ? todo : {
+                return todo.id !== action.payload.id ? todo : {
                     ...todo,
                     isInProgress: true,
                     accomplishTime: todo.accomplishTime ? [
@@ -48,7 +48,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
             });
         case ETodoAction.PAUSE_TIMER:
             return state.map(todo => {
-                return todo.id === action.payload.id ? todo : {
+                return todo.id !== action.payload.id ? todo : {
                     ...todo,
                     accomplishTime: [
                         ...todo.accomplishTime.slice(-1),
@@ -61,7 +61,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
             });
         case ETodoAction.STOP_TIMER:
                 return state.map(todo => {
-                    return todo.id === action.payload.id ? todo : {
+                    return todo.id !== action.payload.id ? todo : {
                         ...todo,
                         doneTime: currentTime,
                         accomplishTime: [
