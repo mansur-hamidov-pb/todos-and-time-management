@@ -1,7 +1,7 @@
 import moment from 'moment';
 
-import { ITodo } from './models';
 import { ETodoAction } from './enums';
+import { ITodo } from './models';
 import { isTodoDone } from './utils';
 
 import { getNewRecordId } from '../../utils';
@@ -51,7 +51,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
                 return todo.id === action.payload.id ? todo : {
                     ...todo,
                     accomplishTime: [
-                        ...todo.accomplishTime.slice(-1),
+                        ...todo.accomplishTime.slice(0, -1),
                         {
                             startTime: todo.accomplishTime[todo.accomplishTime.length - 1].startTime,
                             endTime: currentTime
@@ -65,7 +65,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
                         ...todo,
                         doneTime: currentTime,
                         accomplishTime: [
-                            ...todo.accomplishTime.slice(-1),
+                            ...todo.accomplishTime.slice(0, -1),
                             {
                                 startTime: todo.accomplishTime[todo.accomplishTime.length - 1].startTime,
                                 endTime: todo.accomplishTime[todo.accomplishTime.length - 1].endTime || currentTime

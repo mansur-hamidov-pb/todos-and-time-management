@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { ITodo } from '../models';
-
 import { todosReducer, initialState } from '../reducer';
 
 interface IContext {

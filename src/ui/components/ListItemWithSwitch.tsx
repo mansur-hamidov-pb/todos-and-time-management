@@ -22,7 +22,7 @@ export const ListItemWithSwitch: React.FC<IProps> = ({
         <ListItem>
             <ListItemText primary={title}/>
             <ListItemSecondaryAction>
-                <Switch onChange={onChange} checked={checked}/>
+                <Switch onChange={onChange} color={'primary'} checked={checked}/>
             </ListItemSecondaryAction>
         </ListItem>
         <Divider/>

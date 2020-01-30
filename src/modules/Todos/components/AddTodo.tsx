@@ -1,11 +1,16 @@
 import {
-    Box, Button, TextField, List, Grid, Container
+    Box,
+    Button,
+    Grid,
+    List,
+    TextField,
 } from '@material-ui/core';
-import moment from 'moment';
-
 import * as React from 'react';
+
 import { useTodos } from '../../../hooks';
 import { ListItemWithSwitch } from '../../../ui/components/ListItemWithSwitch';
+import { MainLayout } from '../../../ui/components/MainLayout';
+import { t } from '../../../utils';
 
 export const AddTodo: React.FC = () => {
     const [todoName, setTodoName] = React.useState('');
@@ -38,36 +43,41 @@ export const AddTodo: React.FC = () => {
     }
 
     return (
-        <Box component="div" paddingY={1}>
-            <form onSubmit={handleFormSubmit}>
-                <TextField
-                    label={"Todo name"}
-                    variant="outlined"
-                    value={todoName}
-                    onChange={handleTodoNameChange}
-                    fullWidth
-                    size="small"
-                />
-                <Grid container>
-                    <Grid item xs={12}>
-                        <List>
-                            {[1, 2, 3, 4, 5, 6, 7].map((item) => {
-                                return (
-                                    <ListItemWithSwitch
-                                        key={item}
-                                        title={moment().isoWeekday(item).calendar()}
-                                        onChange={handleDaySet(item)}
-                                        checked={todoDays.includes(item)}
-                                    />
-                                )
-                            })}
-                        </List>
-                        <Button fullWidth variant="contained" color="primary" type="submit" disabled={!isFormValid()}>
-                            add todo
-                        </Button>
+        <MainLayout
+            activeTab={'TODOS'}
+            screenTitle={t('screens:todos')}
+        >
+            <Box component="div" paddingY={1}>
+                <form onSubmit={handleFormSubmit}>
+                    <TextField
+                        label={"Todo name"}
+                        variant="outlined"
+                        value={todoName}
+                        onChange={handleTodoNameChange}
+                        fullWidth
+                        size="small"
+                    />
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <List>
+                                {[1, 2, 3, 4, 5, 6, 7].map((item) => {
+                                    return (
+                                        <ListItemWithSwitch
+                                            key={item}
+                                            title={t(`Todos:weekdays:${item}`)}
+                                            onChange={handleDaySet(item)}
+                                            checked={todoDays.includes(item)}
+                                        />
+                                    )
+                                })}
+                            </List>
+                            <Button fullWidth variant="contained" color="primary" type="submit" disabled={!isFormValid()}>
+                                {t('Todos:add')}
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </form>
-        </Box>
+                </form>
+            </Box>
+        </MainLayout>
     )
 }
