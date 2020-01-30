@@ -4,6 +4,7 @@ export interface ITodo {
     name: string;
     accomplishTime: ITodoAccomplishTime[];
     isInProgress: boolean;
+    isPaused: boolean;
     doneTime?: string | null;
     weekDay: number;
 }

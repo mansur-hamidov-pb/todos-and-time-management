@@ -21,14 +21,15 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
                     id: getNewRecordId(state),
                     createdAt: currentDate.format(),
                     accomplishTime: [],
-                    isInProgress: false
+                    isInProgress: false,
+                    isPaused: false
                 }
             ];
         case ETodoAction.TOGGLE_DONE:
             return state.map(todo => {
-                return todo.id === action.payload.id ? todo : {
+                return todo.id !== action.payload.id ? todo : {
                     ...todo,
-                    doneTime: isTodoDone(todo) ? currentTime : null
+                    doneTime: !isTodoDone(todo) ? currentTime : null
                 }
             });
         case ETodoAction.REMOVE_TODO:
@@ -38,6 +39,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
                 return todo.id !== action.payload.id ? todo : {
                     ...todo,
                     isInProgress: true,
+                    isPaused: false,
                     accomplishTime: todo.accomplishTime ? [
                         ...todo.accomplishTime,
                         {
@@ -50,6 +52,7 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
             return state.map(todo => {
                 return todo.id !== action.payload.id ? todo : {
                     ...todo,
+                    isPaused: true,
                     accomplishTime: [
                         ...todo.accomplishTime.slice(0, -1),
                         {
@@ -64,6 +67,8 @@ export const todosReducer = (state: ITodo[] = initialState, action: any): ITodo[
                     return todo.id !== action.payload.id ? todo : {
                         ...todo,
                         doneTime: currentTime,
+                        isInProgress: false,
+                        isPaused: false,
                         accomplishTime: [
                             ...todo.accomplishTime.slice(0, -1),
                             {
