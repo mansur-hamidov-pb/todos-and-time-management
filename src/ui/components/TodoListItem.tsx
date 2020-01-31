@@ -5,6 +5,7 @@ import {
     ListItemText,
     ListItemSecondaryAction,
     IconButton,
+    ListItemAvatar,
 } from '@material-ui/core';
 import {
     CheckCircle,
@@ -19,15 +20,16 @@ import {
 import * as React from 'react';
 import { ITodo } from '../../modules/Todos/models';
 import { useTodos } from '../../hooks';
-import { isTodoDone, calculateTodoDoneTime } from '../../modules/Todos/utils';
-import moment from 'moment';
+import { isTodoDone, calculateTodoDoneTime, isTodoInOverdue } from '../../modules/Todos/utils';
 
 interface IProps {
     todo: ITodo;
+    isAtLeastOneTodoInProgress: boolean;
 }
 
 export const TodoListItem: React.FC<IProps> = ({
     todo,
+    isAtLeastOneTodoInProgress
 }) => {
     const {
         startTimer,
@@ -42,6 +44,26 @@ export const TodoListItem: React.FC<IProps> = ({
         weekDay
     } = todo;
 
+    const renderTodoStatus = () => {
+        return (
+            <ListItemAvatar>
+                <IconButton>
+                    {isTodoInOverdue(todo) ? (
+                        <HighlightOff color='error' onClick={() => toggleDone(todo.id)} />
+                    ) : isTodoDone(todo) ? (
+                        <CheckCircle style={{ color: green[500] }} onClick={() => toggleDone(todo.id)} />
+                    ) : ((!isAtLeastOneTodoInProgress || todo.isInProgress) && (!todo.isInProgress || todo.isPaused)) ? (
+                        <PlayCircleFilled color="primary" onClick={() => startTimer(todo.id)} />
+                    ) : (todo.isInProgress && !todo.isPaused) ? (
+                        <PauseCircleFilled onClick={() => pauseTimer(todo.id)}/>
+                    ) : (
+                        <Warning style={{ color: yellow[500] }} />
+                    )}
+                </IconButton>
+            </ListItemAvatar>
+        )
+    }
+
     const renderTodoActions = () => {
         if (isTodoDone(todo)) {
             return (
@@ -49,7 +71,7 @@ export const TodoListItem: React.FC<IProps> = ({
                     <IconButton>
                         <CheckCircle style={{ color: green[500] }} />
                     </IconButton>
-                    <IconButton onClick={() => removeTodo(todo.id)}>
+                    <IconButton onClick={() => removeTodo(todo.id)} style={{ paddingRight: '0'}}>
                         <Delete color="error" />
                     </IconButton>
                 </>
@@ -60,25 +82,8 @@ export const TodoListItem: React.FC<IProps> = ({
                     <IconButton onClick={() => removeTodo(todo.id)}>
                         <Delete color="error" />
                     </IconButton>
-                    <IconButton onClick={() => toggleDone(todo.id)}>
-                        {Number(weekDay) >= Number(moment().format('E')) ? (
-                            <Warning style={{ color: yellow[500]}}/>
-                        ) : (
-                            <HighlightOff color="error"/>
-                        )}
-                    </IconButton>
-                    {(!todo.isInProgress || todo.isPaused) && (
-                        <IconButton onClick={() => startTimer(todo.id)}>
-                            <PlayCircleFilled color="primary"/>
-                        </IconButton>
-                    )}
-                    {(todo.isInProgress && !todo.isPaused) && (
-                        <IconButton onClick={() => pauseTimer(todo.id)}>
-                            <PauseCircleFilled />
-                        </IconButton>
-                    )}
                     {todo.isInProgress && (
-                        <IconButton onClick={() => stopTimer(todo.id)}>
+                        <IconButton onClick={() => stopTimer(todo.id)} style={{ paddingRight: '0'}}>
                             <Stop/>
                         </IconButton>
                     )}
@@ -89,7 +94,8 @@ export const TodoListItem: React.FC<IProps> = ({
 
     return (
         <>
-            <ListItem>
+            <ListItem disableGutters>
+                {renderTodoStatus()}
                 <ListItemText primary={name} secondary={calculateTodoDoneTime(accomplishTime)}/>
                 <ListItemSecondaryAction>
                     {renderTodoActions()}

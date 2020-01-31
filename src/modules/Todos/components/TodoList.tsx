@@ -11,6 +11,7 @@ import { TodoListItem } from '../../../ui/components/TodoListItem';
 
 export const TodoList: React.FC = () => {
     const { list: todos } = useTodos();
+    const isAtLeastOneTodoInProgress = todos.some(todo => todo.isInProgress);
 
     return (
         <MainLayout
@@ -20,7 +21,10 @@ export const TodoList: React.FC = () => {
             <Box component="div" paddingY={1}>
                 <List>
                     {todos.map((todo) => (
-                        <TodoListItem todo={todo} key={todo.id} />
+                        <TodoListItem
+                            todo={todo}
+                            isAtLeastOneTodoInProgress={isAtLeastOneTodoInProgress}
+                            key={todo.id} />
                     ))}
                 </List>
             </Box>
