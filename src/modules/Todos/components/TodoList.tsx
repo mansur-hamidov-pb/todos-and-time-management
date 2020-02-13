@@ -11,7 +11,12 @@ import { TodoListItem } from '../../../ui/components/TodoListItem';
 
 export const TodoList: React.FC = () => {
     const { list: todos } = useTodos();
+    const [expandedTodo, setExpandedTodo] = React.useState<number>(0);
     const isAtLeastOneTodoInProgress = todos.some(todo => todo.isInProgress);
+
+    const handleTodoExpand = (id: number): void => {
+        setExpandedTodo(expandedTodo === id ? 0 : id);
+    }
 
     return (
         <MainLayout
@@ -22,6 +27,8 @@ export const TodoList: React.FC = () => {
                 <List>
                     {todos.map((todo) => (
                         <TodoListItem
+                            isExpanded={todo.id === expandedTodo}
+                            onExpand={() => handleTodoExpand(todo.id)}
                             todo={todo}
                             isAtLeastOneTodoInProgress={isAtLeastOneTodoInProgress}
                             key={todo.id} />

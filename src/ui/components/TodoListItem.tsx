@@ -1,4 +1,4 @@
-import { green, yellow } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 import {
     Divider,
     ListItem,
@@ -6,13 +6,19 @@ import {
     ListItemSecondaryAction,
     IconButton,
     ListItemAvatar,
+    ExpansionPanel,
+    ExpansionPanelSummary,
+    Typography,
+    Box,
 } from '@material-ui/core';
 import {
+    AlarmOff,
+    AlarmOn,
+    Cancel,
     CheckCircle,
     Delete,
-    HighlightOff,
+    ExpandMore,
     PlayCircleFilled,
-    Warning,
     PauseCircleFilled,
     Stop,
 } from '@material-ui/icons'
@@ -20,16 +26,20 @@ import {
 import * as React from 'react';
 import { ITodo } from '../../modules/Todos/models';
 import { useTodos } from '../../hooks';
-import { isTodoDone, calculateTodoDoneTime, isTodoInOverdue } from '../../modules/Todos/utils';
+import { isTodoDone, calculateTodoDoneTime, isTodoInOverdue, shouldToDoBeDoneToday } from '../../modules/Todos/utils';
 
 interface IProps {
     todo: ITodo;
+    isExpanded: boolean;
+    onExpand?: () => void;
     isAtLeastOneTodoInProgress: boolean;
 }
 
 export const TodoListItem: React.FC<IProps> = ({
     todo,
-    isAtLeastOneTodoInProgress
+    isAtLeastOneTodoInProgress,
+    onExpand,
+    isExpanded
 }) => {
     const {
         startTimer,
@@ -46,21 +56,23 @@ export const TodoListItem: React.FC<IProps> = ({
 
     const renderTodoStatus = () => {
         return (
-            <ListItemAvatar>
-                <IconButton>
-                    {isTodoInOverdue(todo) ? (
-                        <HighlightOff color='error' onClick={() => toggleDone(todo.id)} />
-                    ) : isTodoDone(todo) ? (
-                        <CheckCircle style={{ color: green[500] }} onClick={() => toggleDone(todo.id)} />
-                    ) : ((!isAtLeastOneTodoInProgress || todo.isInProgress) && (!todo.isInProgress || todo.isPaused)) ? (
-                        <PlayCircleFilled color="primary" onClick={() => startTimer(todo.id)} />
-                    ) : (todo.isInProgress && !todo.isPaused) ? (
-                        <PauseCircleFilled onClick={() => pauseTimer(todo.id)}/>
-                    ) : (
-                        <Warning style={{ color: yellow[500] }} />
-                    )}
+            isTodoInOverdue(todo) ? (
+                <IconButton onClick={() => toggleDone(todo.id)}>
+                    <Cancel color='error' />
                 </IconButton>
-            </ListItemAvatar>
+            ) : isTodoDone(todo) ? (
+                <IconButton onClick={() => toggleDone(todo.id)}>
+                    <CheckCircle style={{ color: green[500] }} />
+                </IconButton>
+            ) : shouldToDoBeDoneToday(todo) ? (
+                <IconButton onClick={() => toggleDone(todo.id)}>
+                    <AlarmOn color="primary" />
+                </IconButton>
+            ) : (
+                <IconButton>
+                    <AlarmOff color="action"/>
+                </IconButton>
+            )
         )
     }
 
@@ -93,16 +105,24 @@ export const TodoListItem: React.FC<IProps> = ({
     }
 
     return (
-        <>
-            <ListItem disableGutters>
+        <ExpansionPanel onClick={undefined} expanded={isExpanded}>
+            <ExpansionPanelSummary
+                expandIcon={<ExpandMore onClick={onExpand}/>}
+                style={{ paddingLeft: '10px' }}
+                
+            >
                 {renderTodoStatus()}
-                <ListItemText primary={name} secondary={calculateTodoDoneTime(accomplishTime)}/>
-                <ListItemSecondaryAction>
-                    {renderTodoActions()}
-                </ListItemSecondaryAction>
-            </ListItem>
-            <Divider/>
-        </>
+                <Box onClick={onExpand}>
+                   
+                    <Typography variant="subtitle1" display="block" component="div">{name}</Typography>
+                    <Typography variant="subtitle2" color="textSecondary" component="div">{calculateTodoDoneTime(accomplishTime)}</Typography>
+                    {/* <ListItemSecondaryAction>
+                        {renderTodoActions()}
+                    </ListItemSecondaryAction> */}
+                </Box>
+                
+            </ExpansionPanelSummary>
+        </ExpansionPanel>
     )
     
 }
