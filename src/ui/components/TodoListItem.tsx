@@ -1,12 +1,8 @@
 import { green } from '@material-ui/core/colors';
 import {
-    Divider,
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction,
     IconButton,
-    ListItemAvatar,
     ExpansionPanel,
+    ExpansionPanelDetails,
     ExpansionPanelSummary,
     Typography,
     Box,
@@ -122,6 +118,9 @@ export const TodoListItem: React.FC<IProps> = ({
                 </Box>
                 
             </ExpansionPanelSummary>
+            {shouldToDoBeDoneToday(todo) && (
+                <ExpansionPanelDetails
+            )}
         </ExpansionPanel>
     )
     

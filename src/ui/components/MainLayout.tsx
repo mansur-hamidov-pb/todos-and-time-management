@@ -39,7 +39,7 @@ export const MainLayout: React.FC<IProps> = ({
 
     return (
         <>
-            <AppBar position="static">
+            <AppBar position="fixed">
                 {previousScreenPath && (
                     <IconButton onClick={() => history.push(previousScreenPath)}>
                         <ArrowBack/>
@@ -49,13 +49,16 @@ export const MainLayout: React.FC<IProps> = ({
 					<Typography variant="h6">{screenTitle}</Typography>
 				</Toolbar>
 			</AppBar>
-            <Container>
+            <Container style={{ paddingBottom: '60px', paddingTop: '60px' }}>
                 {children}
             </Container>
-            <BottomNavigation value={activeTab} showLabels onChange={(_, value: string) => navigateTo(value)}>
-                <BottomNavigationAction value={'TODOS'} label={t('screens:todos')} icon={<ListAlt/>} />
-                <BottomNavigationAction value={'ADD_TODO'} label={t('screens:settings')} icon={<Settings/>} />
-            </BottomNavigation>
+            <AppBar position="fixed" style={{ top: 'auto', bottom: '0' }}>
+                <BottomNavigation value={activeTab} showLabels onChange={(_, value: string) => navigateTo(value)}>
+                    <BottomNavigationAction value={'TODOS'} label={t('screens:todos')} icon={<ListAlt/>} />
+                    <BottomNavigationAction value={'ADD_TODO'} label={t('screens:settings')} icon={<Settings/>} />
+                </BottomNavigation>
+            </AppBar>
+            
         </>
     )
 }
